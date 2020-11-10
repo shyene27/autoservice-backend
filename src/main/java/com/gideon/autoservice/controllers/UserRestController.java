@@ -1,31 +1,32 @@
 package com.gideon.autoservice.controllers;
 
-import com.gideon.autoservice.models.User;
+import com.gideon.autoservice.entity.User;
+import com.gideon.autoservice.services.UserService;
+import com.gideon.autoservice.services.UserServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
+import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/autoservice")
 public class UserRestController {
+
+    @Resource
+    UserService userService;
 
     @GetMapping("/hello")
     public String sayHello(){
         return "Hello World!";
     }
 
-    @GetMapping("/users/{userId}")
-    public User getUsers(@PathVariable int userId){
-
-        List<User> theUsers = new ArrayList<>();
-        theUsers.add(new User("Alexei","Cutasevici"));
-        theUsers.add(new User("vase","botnaru"));
-        theUsers.add(new User("roman","manaf"));
-
-        return theUsers.get(userId);
+    @GetMapping("/userList")
+    public List<User> getUsers(){
+        return userService.findAll();
     }
+
+
 }
