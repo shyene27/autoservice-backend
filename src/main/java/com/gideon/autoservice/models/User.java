@@ -57,4 +57,9 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public User(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }
