@@ -1,8 +1,5 @@
-INSERT into autoservice.users (userId, userName, userPassword, userFirstName, userLastName, userEmail)
-values (1, 'shyene', '$SatCom$', 'Gideon', 'Rainstorm', 'gideon.rainstorm@gmail.com');
+INSERT into users (user_name, user_password, user_email) values ( 'shyene', '$SatCom$', 'gideon.rainstorm@gmail.com');
 
-INSERT into autoservice.users (userId, userName, userPassword, userFirstName, userLastName, userEmail)
-values (2, 'atf', '$SatCom$', 'Alex', 'Turbo', 'alex.turbo@gmail.com');
+INSERT into users (user_name, user_password, user_email) values ( 'atf', '$SatCom$', 'alex.turbo@gmail.com');
 
-INSERT into autoservice.users (userId, userName, userPassword, userFirstName, userLastName, userEmail)
-values (3, 'krusnik', '$SatCom$', 'Vasa', 'Botnaru', 'vasea.botnaru@gmail.com');
+INSERT into users (user_name, user_password, user_email) values ( 'krusnik', '$SatCom$', 'vasea.botnaru@gmail.com');

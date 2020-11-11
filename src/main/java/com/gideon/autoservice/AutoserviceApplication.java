@@ -1,5 +1,6 @@
 package com.gideon.autoservice;
 
+import com.gideon.autoservice.controllers.UserRestController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

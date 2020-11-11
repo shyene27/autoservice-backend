@@ -1,19 +1,30 @@
 package com.gideon.autoservice.entity;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name="users")
 public class User {
 
-    private String userId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", updatable = false, nullable = false)
+    private Long userId;
+
+    @Column(name = "user_name")
     private String userName;
+
+    @Column(name = "user_password")
     private String userPassword;
-    private String userFirstName;
-    private String userLastName;
+
+    @Column(name = "user_email")
     private String userEmail;
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -33,22 +44,6 @@ public class User {
         this.userPassword = userPassword;
     }
 
-    public String getUserFirstName() {
-        return userFirstName;
-    }
-
-    public void setUserFirstName(String userFirstName) {
-        this.userFirstName = userFirstName;
-    }
-
-    public String getUserLastName() {
-        return userLastName;
-    }
-
-    public void setUserLastName(String userLastName) {
-        this.userLastName = userLastName;
-    }
-
     public String getUserEmail() {
         return userEmail;
     }
@@ -57,4 +52,4 @@ public class User {
         this.userEmail = userEmail;
     }
 
-}
+   }
