@@ -3,12 +3,12 @@ package com.gideon.autoservice.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", updatable = false, nullable = false)
+    @Column(name = "user_id", updatable = false)
     private Long userId;
 
     @Column(name = "user_name")
@@ -52,4 +52,4 @@ public class User {
         this.userEmail = userEmail;
     }
 
-   }
+}
