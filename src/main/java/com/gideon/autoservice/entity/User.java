@@ -8,16 +8,13 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", updatable = false)
+    @Column(updatable = false)
     private Long userId;
 
-    @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "user_password")
     private String userPassword;
 
-    @Column(name = "user_email")
     private String userEmail;
 
     public Long getUserId() {

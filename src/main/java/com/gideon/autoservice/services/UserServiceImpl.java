@@ -24,30 +24,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUserByUserName(String userName) throws UserNotFoundException {
-
-        List<User> theUsers = userDao.findByUserName(userName);
-        if (theUsers.isEmpty()) throw new UserNotFoundException();
-
-        return userDao.findByUserName(userName);
-    }
-
-    @Override
     public Optional<User> getUserById(Long id) throws UserNotFoundException {
         userDao.findById(id).orElseThrow(() -> new UserNotFoundException());
         return userDao.findById(id);
     }
 
     @Override
-    public void save(User theUser) {
-        userDao.save(theUser);
+    public User save(User user) {
+       return userDao.save(user);
     }
 
     @Override
-    public void editUser(@RequestBody User theUser) throws UserNotFoundException {
-        final Long id = theUser.getUserId();
-        userDao.findById(id).orElseThrow(() -> new UserNotFoundException());
-        userDao.save(theUser);
+    public User editUser(@RequestBody User user) throws UserNotFoundException {
+        userDao.findById(user.getUserId()).orElseThrow(() -> new UserNotFoundException());
+        return userDao.save(user);
     }
 
 

@@ -5,6 +5,7 @@ import com.gideon.autoservice.exceptions.UserNotFoundException;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -12,13 +13,11 @@ public interface UserService {
 
     List<User> findAll();
 
-    List<User> getUserByUserName(String userName) throws UserNotFoundException;
-
     Optional<User> getUserById(Long id) throws UserNotFoundException;
 
-    void save(User theUser);
+    User save(User user);
 
-    void editUser(@RequestBody User theUser) throws UserNotFoundException;
+    User editUser(@RequestBody User user) throws UserNotFoundException;
 
     void deleteUserById(Long id) throws UserNotFoundException;
 }
