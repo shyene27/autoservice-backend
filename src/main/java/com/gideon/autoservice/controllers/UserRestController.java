@@ -1,6 +1,9 @@
 package com.gideon.autoservice.controllers;
 
+import com.gideon.autoservice.dao.ConfirmationTokenDao;
+import com.gideon.autoservice.entity.ConfirmationToken;
 import com.gideon.autoservice.entity.User;
+import com.gideon.autoservice.exceptions.UserAlreadyExistsException;
 import com.gideon.autoservice.exceptions.UserNotFoundException;
 import com.gideon.autoservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.*;
@@ -27,6 +29,9 @@ public class UserRestController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    ConfirmationTokenDao confirmationTokenDao;
 
     @GetMapping("/")
     public List<User> getAllUsers() {
@@ -46,7 +51,14 @@ public class UserRestController {
 
     @PostMapping("/")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
-        User createdUser = userService.save(user);
+        User createdUser = user;
+
+        try {
+            userService.save(user);
+        } catch (UserAlreadyExistsException e) {
+            return new ResponseEntity<>(CONFLICT);
+        }
+
         return new ResponseEntity<>(createdUser,CREATED);
     }
 
