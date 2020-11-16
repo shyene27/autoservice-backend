@@ -1,7 +1,5 @@
 package com.gideon.autoservice.controllers;
 
-import com.gideon.autoservice.dao.ConfirmationTokenDao;
-import com.gideon.autoservice.entity.ConfirmationToken;
 import com.gideon.autoservice.entity.User;
 import com.gideon.autoservice.exceptions.UserAlreadyExistsException;
 import com.gideon.autoservice.exceptions.UserNotFoundException;
@@ -30,9 +28,6 @@ public class UserRestController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    ConfirmationTokenDao confirmationTokenDao;
-
     @GetMapping("/")
     public List<User> getAllUsers() {
 
@@ -59,7 +54,7 @@ public class UserRestController {
             return new ResponseEntity<>(CONFLICT);
         }
 
-        return new ResponseEntity<>(createdUser,CREATED);
+        return new ResponseEntity<>(createdUser, CREATED);
     }
 
     @PutMapping("/{id}")
@@ -82,4 +77,18 @@ public class UserRestController {
         }
 
     }
+
+    @GetMapping("/register/{token}")
+    public ResponseEntity<Object> confirmUserAccount(@PathVariable String token) {
+
+        try {
+            userService.confirmUserAccount(token);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(ACCEPTED);
+
+    }
 }
+

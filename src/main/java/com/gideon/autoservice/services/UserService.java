@@ -37,7 +37,9 @@ public class UserService {
 
     public User save(User user) throws UserAlreadyExistsException {
 
-        userDao.findByUserEmail(user.getUserEmail()).ifPresent(s -> {throw new UserAlreadyExistsException();});
+        userDao.findByUserEmail(user.getUserEmail()).ifPresent(s -> {
+            throw new UserAlreadyExistsException();
+        });
 
         User createdUser = userDao.save(user);
         ConfirmationToken confirmationToken = new ConfirmationToken(createdUser);
@@ -47,14 +49,24 @@ public class UserService {
         mailMessage.setTo(createdUser.getUserEmail());
         mailMessage.setSubject("Complete Registration!");
         mailMessage.setFrom("sergiucr40@gmail.com");
-        mailMessage.setText("To confirm your email and finish your registration please click here:" +
-                "http://localhost:8080/register/" + confirmationToken.getConfirmationToken());
+        mailMessage.setText("To confirm your email and finish your registration please click here: " +
+                "http://localhost:8080/users/register/" + confirmationToken.getConfirmationToken());
 
         emailSenderService.sendEmail(mailMessage);
 
 
         return createdUser;
     }
+
+    public void confirmUserAccount(String tokenString) throws UserNotFoundException {
+
+        ConfirmationToken token = confirmationTokenDao.findByConfirmationToken(tokenString).orElseThrow(() -> new UserNotFoundException());
+
+        User user = userDao.findByUserEmail(token.getUser().getUserEmail()).get();
+        user.setEnabled(true);
+        userDao.save(user);
+    }
+
 
     public User editUser(@RequestBody User user) throws UserNotFoundException {
         userDao.findById(user.getUserId()).orElseThrow(() -> new UserNotFoundException());
@@ -67,4 +79,5 @@ public class UserService {
         userDao.findById(id).orElseThrow(() -> new UserNotFoundException());
         userDao.deleteById(id);
     }
+
 }

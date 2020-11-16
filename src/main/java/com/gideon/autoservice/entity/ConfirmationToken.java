@@ -28,6 +28,9 @@ public class ConfirmationToken {
 
     }
 
+    public ConfirmationToken() {
+    }
+
     public Long getTokenId() {
         return tokenId;
     }

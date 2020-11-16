@@ -7,14 +7,11 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserDao extends JpaRepository<User, Long>{
+public interface UserDao extends JpaRepository<User, Long> {
 
 
     Optional<User> findByUserEmail(String email);
 
-    Optional<User> findByUserEmailNot(String email);
-
-    Optional<User> findByUserEmailIgnoreCaseNot(String email);
 }
 
 
