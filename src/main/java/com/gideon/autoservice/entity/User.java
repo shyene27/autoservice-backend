@@ -16,6 +16,9 @@ public class User {
     @Column(nullable = false)
     private String userPassword;
 
+    @Column(nullable = false)
+    private String role;
+
     private String firstName;
 
     private String lastName;
@@ -70,5 +73,11 @@ public class User {
         isEnabled = enabled;
     }
 
+    public String getRole() {
+        return role;
+    }
 
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

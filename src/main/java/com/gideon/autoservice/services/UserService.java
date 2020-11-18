@@ -35,6 +35,11 @@ public class UserService {
         return userDao.findById(id);
     }
 
+    // getting email for the userDetails set of data for login
+    public User getUserByEmail(String email) {
+        return userDao.findByUserEmail(email).get();
+    }
+
     public User save(User user) throws UserAlreadyExistsException {
 
         userDao.findByUserEmail(user.getUserEmail()).ifPresent(s -> {
@@ -79,5 +84,6 @@ public class UserService {
         userDao.findById(id).orElseThrow(() -> new UserNotFoundException());
         userDao.deleteById(id);
     }
+
 
 }
