@@ -18,9 +18,8 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("/users")
 public class UserRestController {
 
-    public static final String MESSAGE_NO_USER_BY_NAME = "No resource found for User Name (%s)";
     public static final String MESSAGE_NO_USER_BY_ID = "No User found for id (%s)";
-    public static final String MESSAGE_USER_CREATED = "User created successfully";
+    public static final String MESSAGE_USER_NOT_ENABLED = "User not activated!";
     public static final String MESSAGE_USER_EDITED = "User with Id: %s edited successfully";
     public static final String MESSAGE_USER_DELETED = "User with Id: %s deleted successfully";
 
