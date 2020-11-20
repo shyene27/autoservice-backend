@@ -5,6 +5,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false)
@@ -15,6 +16,7 @@ public class User {
 
     @Column(nullable = false)
     private String userPassword;
+
 
     @Column(nullable = false)
     private String role;
@@ -29,9 +31,6 @@ public class User {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public String getUserEmail() {
         return userEmail;

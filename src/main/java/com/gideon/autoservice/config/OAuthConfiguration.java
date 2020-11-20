@@ -20,29 +20,29 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 public class OAuthConfiguration extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
+    UserDetailsService userDetailsService;
+    @Autowired
     @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserDetailsService userDetailsService;
-
     @Override
-    public void configure(final AuthorizationServerSecurityConfigurer oauthServer) throws Exception{
+    public void configure(final AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
     }
 
     @Override
-    public void configure(ClientDetailsServiceConfigurer clients) throws Exception{
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("admin").secret("$2b$10$J1zOZTkdmxIr7Q6oCBIQJuJxFX3qRJ1Qhzk3S565EW/3Xa4uQISdq")
-                .authorizedGrantTypes("password", "autorization_code", "refresh_token").scopes("read","write")
+                .withClient("admin").secret("$2b$10$dYQUtNLJc4GSg/PSoauaNunYLMQRUTwa20Iue3isEiPrA4ioU5SFi")
+                .authorizedGrantTypes("password", "autorization_code", "refresh_token").scopes("read", "write")
                 .autoApprove("true");
 
     }
 
     @Override
-    public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception{
-        endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager).accessTokenConverter(defaultAccessTokenConverter())
+    public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager)
+                .accessTokenConverter(defaultAccessTokenConverter())
                 .userDetailsService(userDetailsService);
     }
 
