@@ -1,6 +1,6 @@
 package com.gideon.autoservice.config;
 
-import com.gideon.autoservice.services.UserDetailsServiceImpl;
+import com.gideon.autoservice.services.UserDetailsLoaderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    UserDetailsLoaderService userDetailsService;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {

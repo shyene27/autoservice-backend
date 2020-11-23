@@ -1,5 +1,6 @@
 package com.gideon.autoservice.controllers;
 
+import com.gideon.autoservice.entity.UserDto;
 import com.gideon.autoservice.entity.User;
 import com.gideon.autoservice.exceptions.UserAlreadyExistsException;
 import com.gideon.autoservice.exceptions.UserNotFoundException;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -28,13 +28,13 @@ public class UserRestController {
     UserService userService;
 
     @GetMapping("/")
-    public List<User> getAllUsers() {
+    public List<UserDto> findAl() {
 
         return userService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable Long id) {
+    public UserDto getUserById(@PathVariable Long id) {
 
         try {
             return userService.getUserById(id);
@@ -44,11 +44,11 @@ public class UserRestController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
-        User createdUser = user;
+    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto) {
+        UserDto createdUser;
 
         try {
-            userService.save(user);
+           createdUser = userService.save(userDto);
         } catch (UserAlreadyExistsException e) {
             return new ResponseEntity<>(CONFLICT);
         }
@@ -56,12 +56,12 @@ public class UserRestController {
         return new ResponseEntity<>(createdUser, CREATED);
     }
 
-    @PutMapping("/{id}")
-    public User editUser(@RequestBody User user) {
+    @PatchMapping("/{id}")
+    public UserDto editUser(@RequestBody UserDto userDto) {
         try {
-            return userService.editUser(user);
+            return userService.editUser(userDto);
         } catch (UserNotFoundException e) {
-            throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_BY_ID, user.getUserId()));
+            throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_BY_ID, userDto.getId()));
         }
     }
 

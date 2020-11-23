@@ -1,4 +1,4 @@
-package com.gideon.autoservice.services;
+package com.gideon.autoservice.config;
 
 import com.gideon.autoservice.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class MyUserDetailsService implements UserDetails {
+public class UserDetailsConfig implements UserDetails {
 
 
     @Autowired
     private User user;
 
-    public MyUserDetailsService(User user) {
+    public UserDetailsConfig(User user) {
         this.user = user;
     }
 
@@ -25,9 +25,7 @@ public class MyUserDetailsService implements UserDetails {
         String role = user.getRole();
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-
         authorities.add(new SimpleGrantedAuthority(user.getRole()));
-
 
         return authorities;
     }

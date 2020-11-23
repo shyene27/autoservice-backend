@@ -1,52 +1,71 @@
 package com.gideon.autoservice.services;
 
+import com.gideon.autoservice.config.translator.UserTranslator;
 import com.gideon.autoservice.dao.ConfirmationTokenDao;
-import com.gideon.autoservice.dao.UserDao;
+import com.gideon.autoservice.dao.UserRepository;
 import com.gideon.autoservice.entity.ConfirmationToken;
 import com.gideon.autoservice.entity.User;
+import com.gideon.autoservice.entity.UserDto;
 import com.gideon.autoservice.exceptions.UserAlreadyExistsException;
 import com.gideon.autoservice.exceptions.UserNotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-@Component
+@Service
+@AllArgsConstructor
 public class UserService {
 
 
     @Autowired
-    UserDao userDao;
+    private final UserRepository userRepository;
     @Autowired
-    ConfirmationTokenDao confirmationTokenDao;
+    private final ConfirmationTokenDao confirmationTokenDao;
     @Autowired
-    EmailSenderService emailSenderService;
+    private final EmailSenderService emailSenderService;
 
-    public List<User> findAll() {
 
-        return userDao.findAll();
+    public List<UserDto> findAll() {
+        List<User> users = userRepository.findAll();
+        List<UserDto> userDtos = new ArrayList<>();
+
+        for (User user : users) {
+            userDtos.add(UserTranslator.toDto(user));
+        }
+
+        return userDtos;
     }
 
-    public Optional<User> getUserById(Long id) throws UserNotFoundException {
-        userDao.findById(id).orElseThrow(() -> new UserNotFoundException());
-        return userDao.findById(id);
+
+    public UserDto getUserById(Long id) throws UserNotFoundException {
+        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+
+        UserDto userDto = UserTranslator.toDto(userRepository.findById(id).get());
+        return userDto;
     }
+
 
     // getting email for the userDetails set of data for login
     public User getUserByEmail(String email) {
-        return userDao.findByUserEmail(email).get();
+        return userRepository.findByUserEmail(email).get();
     }
 
-    public User save(User user) throws UserAlreadyExistsException {
 
-        userDao.findByUserEmail(user.getUserEmail()).ifPresent(s -> {
+    public UserDto save(UserDto userDto) throws UserAlreadyExistsException {
+
+        User createdUser = UserTranslator.fromDtoCreate(userDto);
+
+        userRepository.findByUserEmail(createdUser.getUserEmail()).ifPresent(s -> {
             throw new UserAlreadyExistsException();
         });
 
-        User createdUser = userDao.save(user);
+        userRepository.save(createdUser);
+
         ConfirmationToken confirmationToken = new ConfirmationToken(createdUser);
         confirmationTokenDao.save(confirmationToken);
 
@@ -59,30 +78,32 @@ public class UserService {
 
         emailSenderService.sendEmail(mailMessage);
 
-
-        return createdUser;
+        return UserTranslator.toDto(createdUser);
     }
+
 
     public void confirmUserAccount(String tokenString) throws UserNotFoundException {
 
         ConfirmationToken token = confirmationTokenDao.findByConfirmationToken(tokenString).orElseThrow(() -> new UserNotFoundException());
 
-        User user = userDao.findByUserEmail(token.getUser().getUserEmail()).get();
+        User user = userRepository.findByUserEmail(token.getUser().getUserEmail()).get();
         user.setEnabled(true);
-        userDao.save(user);
+        userRepository.save(user);
     }
 
 
-    public User editUser(@RequestBody User user) throws UserNotFoundException {
-        userDao.findById(user.getUserId()).orElseThrow(() -> new UserNotFoundException());
-        return userDao.save(user);
+    public UserDto editUser(@RequestBody UserDto userDto) throws UserNotFoundException {
+        User currentUser = userRepository.findById(userDto.getId()).orElseThrow(() -> new UserNotFoundException());
+        User updatedUser = UserTranslator.fromDtoUpdate(userDto,currentUser);
+
+        return UserTranslator.toDto(userRepository.save(updatedUser));
     }
 
 
     public void deleteUserById(Long id) throws UserNotFoundException {
 
-        userDao.findById(id).orElseThrow(() -> new UserNotFoundException());
-        userDao.deleteById(id);
+        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+        userRepository.deleteById(id);
     }
 
 

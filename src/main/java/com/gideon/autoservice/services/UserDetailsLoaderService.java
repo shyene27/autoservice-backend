@@ -1,5 +1,6 @@
 package com.gideon.autoservice.services;
 
+import com.gideon.autoservice.config.UserDetailsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,7 +9,7 @@ import org.springframework.security.oauth2.common.exceptions.UserDeniedAuthoriza
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsLoaderService implements UserDetailsService {
 
     @Autowired
     UserService userService;
@@ -18,6 +19,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         com.gideon.autoservice.entity.User user = userService.getUserByEmail(username);
 
-        return new MyUserDetailsService(user);
+        return new UserDetailsConfig(user);
     }
 }

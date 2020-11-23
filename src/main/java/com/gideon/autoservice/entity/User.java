@@ -1,7 +1,12 @@
 package com.gideon.autoservice.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
@@ -14,9 +19,8 @@ public class User {
     @Column(nullable = false)
     private String userEmail;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String userPassword;
-
 
     @Column(nullable = false)
     private String role;
@@ -27,56 +31,5 @@ public class User {
 
     private boolean isEnabled;
 
-    public Long getUserId() {
-        return userId;
-    }
 
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail.toLowerCase();
-    }
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 }
