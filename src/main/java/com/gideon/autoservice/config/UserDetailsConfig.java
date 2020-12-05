@@ -14,7 +14,7 @@ public class UserDetailsConfig implements UserDetails {
 
 
     @Autowired
-    private User user;
+    private final User user;
 
     public UserDetailsConfig(User user) {
         this.user = user;
@@ -42,7 +42,7 @@ public class UserDetailsConfig implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return user.isExpired();
     }
 
     @Override

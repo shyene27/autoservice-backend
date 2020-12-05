@@ -19,7 +19,7 @@ public class User {
     @Column(nullable = false)
     private String userEmail;
 
-//    @Column(nullable = false)
+    //  @Column(nullable = false)
     private String userPassword;
 
     @Column(nullable = false)
@@ -30,6 +30,8 @@ public class User {
     private String lastName;
 
     private boolean isEnabled;
+
+    private boolean isExpired;
 
 
 }

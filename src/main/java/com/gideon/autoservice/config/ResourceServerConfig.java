@@ -28,11 +28,15 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers(SECURED_PATTERN).and().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SECURED_PATTERN).access(SECURED_WRITE_SCOPE)
                 .anyRequest().access(SECURED_READ_SCOPE);*/
-        http.authorizeRequests().antMatchers("/users/register/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/").hasAnyAuthority("ADMIN", "MECHANIC")
-                .antMatchers(HttpMethod.POST, "/").hasAnyAuthority("ADMIN")
-                .and()
-                .antMatcher("/**").authorizeRequests().anyRequest().authenticated();
-    }
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/users/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
+                .antMatchers(HttpMethod.GET, "/users/").hasAnyAuthority("ADMIN")
+                .antMatchers(HttpMethod.POST, "/users/").permitAll()
+                .antMatchers(HttpMethod.PATCH, "/users/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
+                .antMatchers(HttpMethod.DELETE, "/users/{id}").hasAnyAuthority("ADMIN")
 
+                .anyRequest().authenticated();
+
+
+    }
 }

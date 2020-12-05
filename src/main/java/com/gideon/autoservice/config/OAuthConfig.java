@@ -1,5 +1,6 @@
 package com.gideon.autoservice.config;
 
+import com.gideon.autoservice.dao.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,8 @@ public class OAuthConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     UserDetailsService userDetailsService;
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
@@ -50,6 +53,7 @@ public class OAuthConfig extends AuthorizationServerConfigurerAdapter {
     TokenStore tokenStore() {
         return new JwtTokenStore(defaultAccessTokenConverter());
     }
+
 
     @Bean
     JwtAccessTokenConverter defaultAccessTokenConverter() {

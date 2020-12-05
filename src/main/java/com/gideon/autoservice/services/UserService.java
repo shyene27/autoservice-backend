@@ -14,6 +14,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,8 @@ public class UserService {
     private final ConfirmationTokenDao confirmationTokenDao;
     @Autowired
     private final EmailSenderService emailSenderService;
-
+    @Autowired
+    private final LoggedUserValidationService loggedUserValidationService;
 
     public List<UserDto> findAll() {
         List<User> users = userRepository.findAll();
@@ -42,10 +44,14 @@ public class UserService {
     }
 
 
-    public UserDto getUserById(Long id) throws UserNotFoundException {
+    public UserDto getUserById(Long id) throws UserNotFoundException, AccessDeniedException {
         userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
 
         UserDto userDto = UserTranslator.toDto(userRepository.findById(id).get());
+
+        if (!loggedUserValidationService.hasUserEmail(userDto.getEmail()))
+            throw new AccessDeniedException("Access Denied!");
+
         return userDto;
     }
 
@@ -92,9 +98,14 @@ public class UserService {
     }
 
 
-    public UserDto editUser(@RequestBody UserDto userDto) throws UserNotFoundException {
+    public UserDto editUser(@RequestBody UserDto userDto) throws UserNotFoundException, AccessDeniedException {
+
         User currentUser = userRepository.findById(userDto.getId()).orElseThrow(() -> new UserNotFoundException());
-        User updatedUser = UserTranslator.fromDtoUpdate(userDto,currentUser);
+        if (!loggedUserValidationService.hasUserEmail(currentUser.getUserEmail()))
+            throw new AccessDeniedException("Access Denied!");
+
+        User updatedUser = UserTranslator.fromDtoUpdate(userDto, currentUser);
+
 
         return UserTranslator.toDto(userRepository.save(updatedUser));
     }
@@ -103,7 +114,9 @@ public class UserService {
     public void deleteUserById(Long id) throws UserNotFoundException {
 
         userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id).get();
+        user.setExpired(false);
+        userRepository.save(user);
     }
 
 
