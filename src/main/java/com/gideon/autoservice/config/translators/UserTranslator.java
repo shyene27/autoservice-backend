@@ -1,7 +1,7 @@
-package com.gideon.autoservice.config.translator;
+package com.gideon.autoservice.config.translators;
 
-import com.gideon.autoservice.entity.User;
-import com.gideon.autoservice.entity.UserDto;
+import com.gideon.autoservice.entities.User;
+import com.gideon.autoservice.entities.UserDto;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

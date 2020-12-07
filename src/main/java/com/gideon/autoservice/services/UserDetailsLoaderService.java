@@ -17,7 +17,7 @@ public class UserDetailsLoaderService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, UserDeniedAuthorizationException {
 
-        com.gideon.autoservice.entity.User user = userService.getUserByEmail(username);
+        com.gideon.autoservice.entities.User user = userService.getUserByEmail(username);
 
         return new UserDetailsConfig(user);
     }

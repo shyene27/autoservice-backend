@@ -1,6 +1,6 @@
 package com.gideon.autoservice.config;
 
-import com.gideon.autoservice.entity.User;
+import com.gideon.autoservice.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -42,7 +42,7 @@ public class UserDetailsConfig implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return user.isExpired();
+        return user.isNotExpired();
     }
 
     @Override

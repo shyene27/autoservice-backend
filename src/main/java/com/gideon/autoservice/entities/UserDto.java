@@ -1,4 +1,4 @@
-package com.gideon.autoservice.entity;
+package com.gideon.autoservice.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

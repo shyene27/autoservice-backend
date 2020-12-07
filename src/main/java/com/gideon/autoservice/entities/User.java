@@ -1,4 +1,4 @@
-package com.gideon.autoservice.entity;
+package com.gideon.autoservice.entities;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +22,7 @@ public class User {
     //  @Column(nullable = false)
     private String userPassword;
 
+    // Can be ADMIN, MECHANIC, CUSTOMER
     @Column(nullable = false)
     private String role;
 
@@ -31,7 +32,8 @@ public class User {
 
     private boolean isEnabled;
 
-    private boolean isExpired;
+    @Column(name = "is_not_deleted")
+    private boolean isNotExpired = true;
 
 
 }

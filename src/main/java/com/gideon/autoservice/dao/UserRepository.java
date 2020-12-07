@@ -1,6 +1,6 @@
 package com.gideon.autoservice.dao;
 
-import com.gideon.autoservice.entity.User;
+import com.gideon.autoservice.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

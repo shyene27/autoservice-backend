@@ -1,6 +1,6 @@
 package com.gideon.autoservice.controllers;
 
-import com.gideon.autoservice.entity.UserDto;
+import com.gideon.autoservice.entities.UserDto;
 import com.gideon.autoservice.exceptions.UserAlreadyExistsException;
 import com.gideon.autoservice.exceptions.UserNotFoundException;
 import com.gideon.autoservice.services.UserService;
