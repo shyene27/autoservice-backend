@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 
 @Configuration
 @EnableResourceServer
-public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+public class SecurityResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 
     private static final String RESOURCE_ID = "resource-server-rest-api";
@@ -26,15 +26,18 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/users/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
                 .antMatchers(HttpMethod.GET, "/users/").hasAnyAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/users/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
                 .antMatchers(HttpMethod.GET, "/users/register/{token}").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/users/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
                 .antMatchers(HttpMethod.DELETE, "/users/{id}").hasAnyAuthority("ADMIN")
 
                 .antMatchers(HttpMethod.GET, "/cars/").permitAll()
+                .antMatchers(HttpMethod.GET, "/cars/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
                 .antMatchers(HttpMethod.POST, "/cars/").permitAll()
+                .antMatchers(HttpMethod.PATCH, "/cars/").permitAll()
+
 
                 .anyRequest().authenticated();
 

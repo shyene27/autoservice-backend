@@ -1,6 +1,8 @@
 package com.gideon.autoservice.controllers;
 
-import com.gideon.autoservice.entities.UserDto;
+import com.gideon.autoservice.config.translators.UserTranslator;
+import com.gideon.autoservice.entities.User;
+import com.gideon.autoservice.dto.UserDto;
 import com.gideon.autoservice.exceptions.UserAlreadyExistsException;
 import com.gideon.autoservice.exceptions.UserNotFoundException;
 import com.gideon.autoservice.services.UserService;
@@ -27,8 +29,6 @@ public class UserRestController {
 
     public static final String MESSAGE_NO_USER_BY_ID = "No User found for id (%s)";
     public static final String MESSAGE_ACCESS_DENIED = "Not authorised!";
-    public static final String MESSAGE_USER_EDITED = "User with Id: %s edited successfully";
-    public static final String MESSAGE_USER_DELETED = "User with Id: %s deleted successfully";
 
 
     @Autowired
@@ -40,14 +40,15 @@ public class UserRestController {
     @GetMapping("/")
     public List<UserDto> findAll() {
 
-        return userService.findAll();
+        return UserTranslator.toDtoList(userService.findAll());
     }
 
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable Long id) {
 
         try {
-            return userService.getUserById(id);
+            return UserTranslator.toDto(userService.getUserById(id));
+
         } catch (UserNotFoundException e) {
             throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_BY_ID, id));
         } catch (AccessDeniedException e) {
@@ -57,21 +58,22 @@ public class UserRestController {
 
     @PostMapping("/")
     public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto) {
-        UserDto createdUser;
+        User createdUser;
 
         try {
-            createdUser = userService.save(userDto);
+            createdUser = userService.save(UserTranslator.fromDtoCreate(userDto));
         } catch (UserAlreadyExistsException e) {
             return new ResponseEntity<>(CONFLICT);
         }
 
-        return new ResponseEntity<>(createdUser, CREATED);
+        return new ResponseEntity<>(UserTranslator.toDto(createdUser), CREATED);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/")
     public UserDto editUser(@RequestBody UserDto userDto) {
         try {
-            return userService.editUser(userDto);
+
+            return UserTranslator.toDto(userService.editUser(userDto));
         } catch (UserNotFoundException e) {
             throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_BY_ID, userDto.getId()));
         } catch (AccessDeniedException e) {

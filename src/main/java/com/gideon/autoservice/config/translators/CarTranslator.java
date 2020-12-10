@@ -1,29 +1,32 @@
 package com.gideon.autoservice.config.translators;
 
-import com.gideon.autoservice.dao.UserRepository;
 import com.gideon.autoservice.entities.Car;
-import com.gideon.autoservice.entities.CarDto;
+import com.gideon.autoservice.dto.CarDto;
 import com.gideon.autoservice.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CarTranslator {
 
-    @Autowired
-    static
-    UserRepository userRepository;
 
-    public static CarDto toDto(Car car){
+    public static CarDto toDto(Car car) {
         CarDto carDto = new CarDto();
 
         carDto.setId(car.getCarId());
         carDto.setVin(car.getVin());
-        carDto.setCarData(car.getMake()+" "+car.getModel()+" "+car.getYear());
+        carDto.setCarData(car.getMake() + " " + car.getModel() + " " + car.getYear());
         carDto.setUserId((car.getUser()).getUserId());
 
         return carDto;
     }
 
-    public static Car fromDtoCreate(CarDto carDto, User user){
+    public static List<CarDto> toDtoList(List<Car> cars) {
+
+        return cars.stream().map(CarTranslator::toDto).collect(Collectors.toList());
+    }
+
+    public static Car fromDto(CarDto carDto, User user) {
         Car car = new Car();
 
         car.setCarId(carDto.getId());
@@ -36,16 +39,13 @@ public class CarTranslator {
         return car;
     }
 
-    public static Car fromDtoUpdate(CarDto carDto, Car currentCar) {
-        Car car = new Car();
+    public static Car updateCarUtil(Car modifiedCar, Car currentCar) {
 
-        if(carDto.getVin()!=null) currentCar.setVin(carDto.getVin());
-        if(carDto.getMake()!=null) currentCar.setMake(carDto.getMake());
-        if(carDto.getModel()!=null) currentCar.setModel(carDto.getModel());
-        if(carDto.getYear()!=null) currentCar.setYear(carDto.getYear());
+        if (modifiedCar.getVin() != null) currentCar.setVin(modifiedCar.getVin());
+        if (modifiedCar.getMake() != null) currentCar.setMake(modifiedCar.getMake());
+        if (modifiedCar.getModel() != null) currentCar.setModel(modifiedCar.getModel());
+        if (modifiedCar.getYear() != null) currentCar.setYear(modifiedCar.getYear());
 
-
-
-        return car;
+        return currentCar;
     }
 }

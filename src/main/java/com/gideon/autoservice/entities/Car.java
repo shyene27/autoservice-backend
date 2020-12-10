@@ -29,7 +29,7 @@ public class Car {
     @JoinColumn(name = "userId",nullable = false)
     private User user;
 
-    private boolean isEnabled = true;
+    private boolean isDeleted;
 
 //    public Car (User user, String vin, String make, String model, Short year){
 //        this.user = user;

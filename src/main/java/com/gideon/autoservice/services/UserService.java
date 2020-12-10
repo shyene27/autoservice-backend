@@ -3,9 +3,9 @@ package com.gideon.autoservice.services;
 import com.gideon.autoservice.config.translators.UserTranslator;
 import com.gideon.autoservice.dao.ConfirmationTokenDao;
 import com.gideon.autoservice.dao.UserRepository;
-import com.gideon.autoservice.entities.UserConfirmationToken;
 import com.gideon.autoservice.entities.User;
-import com.gideon.autoservice.entities.UserDto;
+import com.gideon.autoservice.entities.UserConfirmationToken;
+import com.gideon.autoservice.dto.UserDto;
 import com.gideon.autoservice.exceptions.UserAlreadyExistsException;
 import com.gideon.autoservice.exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,41 +28,32 @@ public class UserService {
     @Autowired
     private final EmailSenderService emailSenderService;
     @Autowired
-    private final LoggedUserValidationService loggedUserValidationService;
+    private final LoggedUserValidationService validationService;
 
-    public List<UserDto> findAll() {
-        List<User> users = userRepository.findAll();
-        List<UserDto> userDtos = new ArrayList<>();
+    public List<User> findAll() {
 
-        for (User user : users) {
-            userDtos.add(UserTranslator.toDto(user));
-        }
-
-        return userDtos;
+        return userRepository.findByIsNotExpired(true);
     }
 
 
-    public UserDto getUserById(Long id) throws UserNotFoundException, AccessDeniedException {
-        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+    public User getUserById(Long id) throws UserNotFoundException, AccessDeniedException {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException());
 
-        UserDto userDto = UserTranslator.toDto(userRepository.findById(id).get());
+        validationService.validateUserAccess(user.getUserEmail());
 
-        if (!loggedUserValidationService.hasUserEmail(userDto.getEmail()))
-            throw new AccessDeniedException("Access Denied!");
-
-        return userDto;
+        return user;
     }
-
 
     // getting email for the userDetails set of data for login
     public User getUserByEmail(String email) {
+
         return userRepository.findByUserEmail(email).get();
     }
 
 
-    public UserDto save(UserDto userDto) throws UserAlreadyExistsException {
 
-        User createdUser = UserTranslator.fromDtoCreate(userDto);
+    public User save(User createdUser) throws UserAlreadyExistsException {
 
         userRepository.findByUserEmail(createdUser.getUserEmail()).ifPresent(s -> {
             throw new UserAlreadyExistsException();
@@ -76,7 +66,7 @@ public class UserService {
 
         emailSenderService.createEmail(createdUser.getUserEmail(), confirmationToken);
 
-        return UserTranslator.toDto(createdUser);
+        return createdUser;
     }
 
 
@@ -90,23 +80,23 @@ public class UserService {
     }
 
 
-    public UserDto editUser(@RequestBody UserDto userDto) throws UserNotFoundException, AccessDeniedException {
+    public User editUser(@RequestBody UserDto userDto) throws UserNotFoundException, AccessDeniedException {
 
-        User currentUser = userRepository.findById(userDto.getId()).orElseThrow(() -> new UserNotFoundException());
-        if (!loggedUserValidationService.hasUserEmail(currentUser.getUserEmail()))
-            throw new AccessDeniedException("Access Denied!");
+        User currentUser = userRepository.findById(userDto.getId())
+                .orElseThrow(() -> new UserNotFoundException());
+
+        validationService.validateUserAccess(currentUser.getUserEmail());
 
         User updatedUser = UserTranslator.fromDtoUpdate(userDto, currentUser);
 
 
-        return UserTranslator.toDto(userRepository.save(updatedUser));
+        return userRepository.save(updatedUser);
     }
 
 
     public void deleteUserById(Long id) throws UserNotFoundException {
 
-        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
         user.setNotExpired(false);
         userRepository.save(user);
     }
