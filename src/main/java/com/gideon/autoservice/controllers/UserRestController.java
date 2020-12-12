@@ -49,7 +49,6 @@ public class UserRestController {
 
         try {
             return UserTranslator.toDto(userService.getUserById(id));
-
         } catch (UserNotFoundException e) {
             throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_FOUND));
         } catch (AccessDeniedException e) {
@@ -71,8 +70,8 @@ public class UserRestController {
 
     @PatchMapping("/{id}")
     public UserDto editUser(@RequestBody UserDto userDto) {
-        try {
 
+        try {
             return UserTranslator.toDto(userService.editUser(userDto));
         } catch (UserNotFoundException e) {
             throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_FOUND));
@@ -106,6 +105,7 @@ public class UserRestController {
 
     @GetMapping("/reset")
     public ResponseEntity<Object> resetPasswordInitiate(@RequestBody UserDto userDto){
+
         try{
             userService.resetPasswordInitiate(userDto.getEmail());
         } catch (UserNotFoundException e){
@@ -117,6 +117,7 @@ public class UserRestController {
 
     @PostMapping("/reset/{token}")
     public ResponseEntity<Object> resetPasswordFinalize(@PathVariable String token, @RequestBody UserDto userDto){
+
         try{
             userService.resetPasswordFinalize(token, bCryptPasswordEncoder.encode(userDto.getPassword()));
         } catch (UserNotFoundException e) {
