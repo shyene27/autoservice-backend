@@ -18,14 +18,11 @@ import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
+import static com.gideon.autoservice.exceptions.HttpMessages.*;
 
 @RestController
 @RequestMapping("/cars")
 public class CarRestController {
-
-    public static final String MESSAGE_NO_CAR_BY_ID = "No Car found for id (%s)";
-    public static final String MESSAGE_CAR_DELETED = "Car with id (%s) was deleted";
-    public static final String MESSAGE_ACCESS_DENIED = "Not authorised!";
 
 
     @Autowired
@@ -64,7 +61,7 @@ public class CarRestController {
         return new ResponseEntity<>(CarTranslator.toDto(newCar), CREATED);
     }
 
-    @PatchMapping("/")
+    @PatchMapping("/{id}")
     public CarDto editCar(@RequestBody CarDto carDto) throws UserNotFoundException {
         try {
             User user = userService.getUserById(carDto.getUserId());

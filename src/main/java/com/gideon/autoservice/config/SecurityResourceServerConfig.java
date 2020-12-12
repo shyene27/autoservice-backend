@@ -29,6 +29,8 @@ public class SecurityResourceServerConfig extends ResourceServerConfigurerAdapte
                 .antMatchers(HttpMethod.GET, "/users/").hasAnyAuthority("ADMIN")
                 .antMatchers(HttpMethod.GET, "/users/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
                 .antMatchers(HttpMethod.GET, "/users/register/{token}").permitAll()
+                .antMatchers(HttpMethod.GET, "/users/reset/").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/reset/{token}").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/users/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
                 .antMatchers(HttpMethod.DELETE, "/users/{id}").hasAnyAuthority("ADMIN")
@@ -37,6 +39,7 @@ public class SecurityResourceServerConfig extends ResourceServerConfigurerAdapte
                 .antMatchers(HttpMethod.GET, "/cars/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
                 .antMatchers(HttpMethod.POST, "/cars/").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/cars/").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/cars/{id}").permitAll()
 
 
                 .anyRequest().authenticated();

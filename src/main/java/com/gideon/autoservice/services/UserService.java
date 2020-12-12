@@ -46,9 +46,10 @@ public class UserService {
     }
 
     // getting email for the userDetails set of data for login
-    public User getUserByEmail(String email) {
+    public User getUserByEmail(String email) throws UserNotFoundException {
 
-        return userRepository.findByUserEmail(email).get();
+        return userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new UserNotFoundException());
     }
 
 
@@ -64,7 +65,7 @@ public class UserService {
         UserConfirmationToken confirmationToken = new UserConfirmationToken(createdUser);
         confirmationTokenDao.save(confirmationToken);
 
-        emailSenderService.createEmail(createdUser.getUserEmail(), confirmationToken);
+        emailSenderService.sendRegisterEmail(createdUser.getUserEmail(), confirmationToken);
 
         return createdUser;
     }
@@ -102,4 +103,21 @@ public class UserService {
     }
 
 
+    public void resetPasswordInitiate(String userEmail) throws UserNotFoundException {
+        User user = userRepository.findByUserEmail(userEmail)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        UserConfirmationToken confirmationToken = new UserConfirmationToken(user);
+        confirmationTokenDao.save(confirmationToken);
+
+        emailSenderService.sendResetEmail(userEmail, confirmationToken);
+    }
+
+    public void resetPasswordFinalize(String tokenString, String userPassword) throws UserNotFoundException{
+        UserConfirmationToken token = confirmationTokenDao.findByConfirmationToken(tokenString).orElseThrow(() -> new UserNotFoundException());
+
+        User user = userRepository.findByUserEmail(token.getUser().getUserEmail()).get();
+        user.setUserPassword(userPassword);
+        userRepository.save(user);
+    }
 }

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.*;
@@ -22,20 +23,20 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
+import static com.gideon.autoservice.exceptions.HttpMessages.*;
 
 @RestController
 @RequestMapping("/users")
 public class UserRestController {
 
-    public static final String MESSAGE_NO_USER_BY_ID = "No User found for id (%s)";
-    public static final String MESSAGE_ACCESS_DENIED = "Not authorised!";
-
 
     @Autowired
     UserService userService;
-
     @Autowired
     TokenStore tokenStore;
+    @Autowired
+    static
+    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @GetMapping("/")
     public List<UserDto> findAll() {
@@ -50,7 +51,7 @@ public class UserRestController {
             return UserTranslator.toDto(userService.getUserById(id));
 
         } catch (UserNotFoundException e) {
-            throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_BY_ID, id));
+            throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_FOUND));
         } catch (AccessDeniedException e) {
             throw new ResponseStatusException(FORBIDDEN, String.format(MESSAGE_ACCESS_DENIED));
         }
@@ -65,17 +66,16 @@ public class UserRestController {
         } catch (UserAlreadyExistsException e) {
             return new ResponseEntity<>(CONFLICT);
         }
-
         return new ResponseEntity<>(UserTranslator.toDto(createdUser), CREATED);
     }
 
-    @PatchMapping("/")
+    @PatchMapping("/{id}")
     public UserDto editUser(@RequestBody UserDto userDto) {
         try {
 
             return UserTranslator.toDto(userService.editUser(userDto));
         } catch (UserNotFoundException e) {
-            throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_BY_ID, userDto.getId()));
+            throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_FOUND));
         } catch (AccessDeniedException e) {
             throw new ResponseStatusException(FORBIDDEN, String.format(MESSAGE_ACCESS_DENIED));
         }
@@ -88,9 +88,8 @@ public class UserRestController {
             userService.deleteUserById(id);
             return new ResponseEntity<>(NO_CONTENT);
         } catch (UserNotFoundException e) {
-            throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_BY_ID, id));
+            throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_FOUND));
         }
-
     }
 
     @GetMapping("/register/{token}")
@@ -103,7 +102,27 @@ public class UserRestController {
         }
 
         return new ResponseEntity<>(ACCEPTED);
+    }
 
+    @GetMapping("/reset")
+    public ResponseEntity<Object> resetPasswordInitiate(@RequestBody UserDto userDto){
+        try{
+            userService.resetPasswordInitiate(userDto.getEmail());
+        } catch (UserNotFoundException e){
+            throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_FOUND));
+        }
+
+        return new ResponseEntity<>(NO_CONTENT);
+    }
+
+    @PostMapping("/reset/{token}")
+    public ResponseEntity<Object> resetPasswordFinalize(@PathVariable String token, @RequestBody UserDto userDto){
+        try{
+            userService.resetPasswordFinalize(token, bCryptPasswordEncoder.encode(userDto.getPassword()));
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(NOT_FOUND);
+        }
+        return new ResponseEntity<>(ACCEPTED);
     }
 
     @GetMapping("/logout")
@@ -116,7 +135,6 @@ public class UserRestController {
             OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
 
             tokenStore.removeAccessToken(accessToken);
-
         }
     }
 

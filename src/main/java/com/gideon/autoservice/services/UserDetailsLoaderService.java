@@ -1,6 +1,7 @@
 package com.gideon.autoservice.services;
 
 import com.gideon.autoservice.config.UserDetailsConfig;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,6 +15,7 @@ public class UserDetailsLoaderService implements UserDetailsService {
     @Autowired
     UserService userService;
 
+    @SneakyThrows
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, UserDeniedAuthorizationException {
 

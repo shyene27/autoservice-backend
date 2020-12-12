@@ -17,7 +17,7 @@ public class EmailSenderService {
         this.javaMailSender=javaMailSender;
     }
 
-    public void createEmail(String emailAdress, UserConfirmationToken confirmationToken){
+    public void sendRegisterEmail(String emailAdress, UserConfirmationToken confirmationToken){
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(emailAdress);
@@ -25,6 +25,18 @@ public class EmailSenderService {
         mailMessage.setFrom("sergiucr40@gmail.com");
         mailMessage.setText("To confirm your email and finish your registration please click here: " +
                 "http://localhost:8080/users/register/" + confirmationToken.getConfirmationToken());
+
+        sendEmail(mailMessage);
+    }
+
+    public void sendResetEmail(String emailAdress, UserConfirmationToken confirmationToken){
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(emailAdress);
+        mailMessage.setSubject("Reset Password!");
+        mailMessage.setFrom("sergiucr40@gmail.com");
+        mailMessage.setText("To reset your password please click here: " +
+                "http://localhost:8080/users/reset/" + confirmationToken.getConfirmationToken());
 
         sendEmail(mailMessage);
     }
