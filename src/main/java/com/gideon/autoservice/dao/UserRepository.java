@@ -13,8 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUserEmail(String email);
 
-
     List<User> findByIsNotExpired(boolean b);
+
 }
 
 

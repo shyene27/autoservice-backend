@@ -1,6 +1,5 @@
 package com.gideon.autoservice.services;
 
-import com.gideon.autoservice.config.translators.CarTranslator;
 import com.gideon.autoservice.dao.CarRepository;
 import com.gideon.autoservice.dao.UserRepository;
 import com.gideon.autoservice.entities.Car;
@@ -58,7 +57,7 @@ public class CarService {
 
         validationService.validateUserAccess(modifiedCar);
 
-        return carRepository.save(CarTranslator.updateCarUtil(modifiedCar, currentCar));
+        return carRepository.save(EntityUpdateService.updateCarUtil(modifiedCar, currentCar));
 
     }
 

@@ -39,13 +39,4 @@ public class CarTranslator {
         return car;
     }
 
-    public static Car updateCarUtil(Car modifiedCar, Car currentCar) {
-
-        if (modifiedCar.getVin() != null) currentCar.setVin(modifiedCar.getVin());
-        if (modifiedCar.getMake() != null) currentCar.setMake(modifiedCar.getMake());
-        if (modifiedCar.getModel() != null) currentCar.setModel(modifiedCar.getModel());
-        if (modifiedCar.getYear() != null) currentCar.setYear(modifiedCar.getYear());
-
-        return currentCar;
-    }
 }

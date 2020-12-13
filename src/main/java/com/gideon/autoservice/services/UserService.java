@@ -1,11 +1,9 @@
 package com.gideon.autoservice.services;
 
-import com.gideon.autoservice.config.translators.UserTranslator;
 import com.gideon.autoservice.dao.ConfirmationTokenDao;
 import com.gideon.autoservice.dao.UserRepository;
 import com.gideon.autoservice.entities.User;
 import com.gideon.autoservice.entities.UserConfirmationToken;
-import com.gideon.autoservice.dto.UserDto;
 import com.gideon.autoservice.exceptions.UserAlreadyExistsException;
 import com.gideon.autoservice.exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
@@ -81,14 +79,15 @@ public class UserService {
     }
 
 
-    public User editUser(@RequestBody UserDto userDto) throws UserNotFoundException, AccessDeniedException {
+    public User editUser(@RequestBody User modifiedUser) throws UserNotFoundException, AccessDeniedException {
 
-        User currentUser = userRepository.findById(userDto.getId())
+        User currentUser = userRepository
+                .findById(modifiedUser.getUserId())
                 .orElseThrow(() -> new UserNotFoundException());
 
         validationService.validateUserAccess(currentUser.getUserEmail());
 
-        User updatedUser = UserTranslator.fromDtoUpdate(userDto, currentUser);
+        User updatedUser = EntityUpdateService.updateUserUtil(modifiedUser, currentUser);
 
 
         return userRepository.save(updatedUser);

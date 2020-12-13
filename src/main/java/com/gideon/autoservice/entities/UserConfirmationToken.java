@@ -2,8 +2,10 @@ package com.gideon.autoservice.entities;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -19,7 +21,8 @@ public class UserConfirmationToken {
 
     private String confirmationToken;
 
-    private Date createdDate;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "userId", nullable = false)
@@ -27,7 +30,6 @@ public class UserConfirmationToken {
 
     public UserConfirmationToken(User user) {
         this.user = user;
-        createdDate = new Date();
         confirmationToken = UUID.randomUUID().toString();
 
     }

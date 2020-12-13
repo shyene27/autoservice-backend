@@ -31,13 +31,9 @@ public class Car {
 
     private boolean isDeleted;
 
-//    public Car (User user, String vin, String make, String model, Short year){
-//        this.user = user;
-//        this.vin = vin;
-//        this.make = make;
-//        this.model = model;
-//        this.year = year;
-//
-//    }
 
+    public String getFullName(){
+
+        return (this.make+" "+this.model+" "+this.year);
+    }
 }

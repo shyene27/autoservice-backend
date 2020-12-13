@@ -1,5 +1,6 @@
 package com.gideon.autoservice.config;
 
+import com.gideon.autoservice.enums.Role;
 import com.gideon.autoservice.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,10 +23,10 @@ public class UserDetailsConfig implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String role = user.getRole();
+        String role = user.getRole().name();
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        authorities.add(new SimpleGrantedAuthority(user.getRole()));
+        authorities.add(new SimpleGrantedAuthority(role));
 
         return authorities;
     }

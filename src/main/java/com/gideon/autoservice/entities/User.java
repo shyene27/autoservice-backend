@@ -1,5 +1,6 @@
 package com.gideon.autoservice.entities;
 
+import com.gideon.autoservice.enums.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,12 +20,11 @@ public class User {
     @Column(nullable = false)
     private String userEmail;
 
-    //  @Column(nullable = false)
     private String userPassword;
 
-    // Can be ADMIN, MECHANIC, CUSTOMER
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role;
+    private Role role;
 
     private String firstName;
 
@@ -35,5 +35,8 @@ public class User {
     @Column(name = "is_not_deleted")
     private boolean isNotExpired = true;
 
+    public String getFullName(){
+        return (this.firstName+" "+this.lastName);
+    }
 
 }

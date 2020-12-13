@@ -34,7 +34,7 @@ public class UserTranslator {
         return userDto;
     }
 
-    public static User fromDtoCreate(UserDto userDto) {
+    public static User fromDto(UserDto userDto) {
         User user = new User();
 
         user.setUserId(userDto.getId());
@@ -42,18 +42,10 @@ public class UserTranslator {
         user.setLastName(userDto.getLastName());
         user.setUserEmail(userDto.getEmail());
         user.setRole(userDto.getRole());
+
+        if(userDto.getPassword()!=null)
         user.setUserPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 
         return user;
-    }
-
-    public static User fromDtoUpdate(UserDto userDto, User currentUser){
-
-        if (userDto.getEmail()!=null) currentUser.setUserEmail(userDto.getEmail());
-        if (userDto.getRole()!=null) currentUser.setRole(userDto.getRole());
-        if (userDto.getFirstName()!=null) currentUser.setFirstName(userDto.getFirstName());
-        if (userDto.getLastName()!=null) currentUser.setLastName(userDto.getLastName());
-
-        return currentUser;
     }
 }

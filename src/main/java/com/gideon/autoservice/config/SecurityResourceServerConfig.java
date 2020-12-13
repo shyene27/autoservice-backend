@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
+import static org.springframework.http.HttpMethod.*;
+
 @Configuration
 @EnableResourceServer
 public class SecurityResourceServerConfig extends ResourceServerConfigurerAdapter {
@@ -26,20 +28,23 @@ public class SecurityResourceServerConfig extends ResourceServerConfigurerAdapte
     public void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/users/").hasAnyAuthority("ADMIN")
-                .antMatchers(HttpMethod.GET, "/users/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
-                .antMatchers(HttpMethod.GET, "/users/register/{token}").permitAll()
-                .antMatchers(HttpMethod.GET, "/users/reset/").permitAll()
-                .antMatchers(HttpMethod.POST, "/users/reset/{token}").permitAll()
-                .antMatchers(HttpMethod.POST, "/users/").permitAll()
-                .antMatchers(HttpMethod.PATCH, "/users/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
-                .antMatchers(HttpMethod.DELETE, "/users/{id}").hasAnyAuthority("ADMIN")
+                .antMatchers(GET, "/users/").hasAnyAuthority("ADMIN")
+                .antMatchers(GET, "/users/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
+                .antMatchers(GET, "/users/register/{token}").permitAll()
+                .antMatchers(GET, "/users/reset/").permitAll()
+                .antMatchers(POST, "/users/reset/{token}").permitAll()
+                .antMatchers(POST, "/users/").permitAll()
+                .antMatchers(PATCH, "/users/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
+                .antMatchers(DELETE, "/users/{id}").hasAnyAuthority("ADMIN")
 
-                .antMatchers(HttpMethod.GET, "/cars/").permitAll()
-                .antMatchers(HttpMethod.GET, "/cars/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
-                .antMatchers(HttpMethod.POST, "/cars/").permitAll()
-                .antMatchers(HttpMethod.PATCH, "/cars/").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/cars/{id}").permitAll()
+                .antMatchers(GET, "/cars/").permitAll()
+                .antMatchers(GET, "/cars/{id}").hasAnyAuthority("ADMIN", "MECHANIC", "CUSTOMER")
+                .antMatchers(POST, "/cars/").permitAll()
+                .antMatchers(PATCH, "/cars/").permitAll()
+                .antMatchers(DELETE, "/cars/{id}").permitAll()
+
+                .antMatchers(GET, "/orders/").permitAll()
+                .antMatchers(POST, "/orders/").permitAll()
 
 
                 .anyRequest().authenticated();

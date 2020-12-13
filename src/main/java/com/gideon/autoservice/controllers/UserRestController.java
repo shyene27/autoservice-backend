@@ -24,6 +24,7 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 import static com.gideon.autoservice.exceptions.HttpMessages.*;
+import static com.gideon.autoservice.config.translators.UserTranslator.*;
 
 @RestController
 @RequestMapping("/users")
@@ -61,7 +62,7 @@ public class UserRestController {
         User createdUser;
 
         try {
-            createdUser = userService.save(UserTranslator.fromDtoCreate(userDto));
+            createdUser = userService.save(UserTranslator.fromDto(userDto));
         } catch (UserAlreadyExistsException e) {
             return new ResponseEntity<>(CONFLICT);
         }
@@ -72,7 +73,8 @@ public class UserRestController {
     public UserDto editUser(@RequestBody UserDto userDto) {
 
         try {
-            return UserTranslator.toDto(userService.editUser(userDto));
+            User modifiedUser = UserTranslator.fromDto(userDto);
+            return UserTranslator.toDto(userService.editUser(modifiedUser));
         } catch (UserNotFoundException e) {
             throw new ResponseStatusException(NOT_FOUND, String.format(MESSAGE_NO_USER_FOUND));
         } catch (AccessDeniedException e) {

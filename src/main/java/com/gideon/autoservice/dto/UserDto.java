@@ -1,6 +1,7 @@
 package com.gideon.autoservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gideon.autoservice.enums.Role;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -17,7 +18,7 @@ public class UserDto {
     @NonNull
     private String email;
     @NonNull
-    private String role;
+    private Role role;
     @NonNull
     private String name;
 
